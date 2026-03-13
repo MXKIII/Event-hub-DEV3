@@ -1,0 +1,419 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Event Hub API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8100"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CreateEventRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "postalcode",
+          "address",
+          "capacity",
+          "ticket",
+          "price",
+          "category",
+          "createdBy",
+          "startDate"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Soirée Jazz Live"
+          },
+          "description": {
+            "type": "string",
+            "example": "Concert live + restauration sur place."
+          },
+          "postalcode": {
+            "type": "string",
+            "example": "75011"
+          },
+          "address": {
+            "type": "string",
+            "example": "5 Rue du Faubourg Saint-Denis, Paris"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 120
+          },
+          "ticket": {
+            "type": "integer",
+            "example": 100
+          },
+          "price": {
+            "type": "number",
+            "example": 22.5
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "musique",
+              "festival"
+            ]
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "asso_music"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-15T19:30:00.000Z"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "evt-001"
+          },
+          "title": {
+            "type": "string",
+            "example": "Soirée Jazz Live"
+          },
+          "description": {
+            "type": "string",
+            "example": "Concert live + restauration sur place."
+          },
+          "postalcode": {
+            "type": "string",
+            "example": "75011"
+          },
+          "address": {
+            "type": "string",
+            "example": "5 Rue du Faubourg Saint-Denis, Paris"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 120
+          },
+          "ticket": {
+            "type": "integer",
+            "example": 100
+          },
+          "price": {
+            "type": "number",
+            "example": 22.5
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "musique",
+              "festival"
+            ]
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "asso_music"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-15T19:30:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Événement introuvable."
+          },
+          "code": {
+            "type": "integer",
+            "example": 404
+          },
+          "details": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      },
+      "ApiSuccessEvent": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/Event"
+          }
+        }
+      },
+      "ApiSuccessEvents": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          }
+        }
+      },
+      "ApiFailure": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "nullable": true,
+            "example": null
+          },
+          "error": {
+            "$ref": "#/components/schemas/ApiError"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/events/{id}": {
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Supprimer un événement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "evt-001"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Événement supprimé (No Content)"
+          },
+          "404": {
+            "description": "Événement introuvable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Récupérer un événement par ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "evt-001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Événement trouvé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessEvent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Événement introuvable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Mettre à jour un événement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "evt-001"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Événement mis à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessEvent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Événement introuvable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation invalide",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Récupérer tous les événements",
+        "responses": {
+          "200": {
+            "description": "Liste des événements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessEvents"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Créer un événement",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Événement créé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessEvent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Non autorisé (token manquant/invalide)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation invalide",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Event {
+  id          String   @id
+  title       String
+  description String
+  postalcode  String
+  address     String
+  capacity    Int
+  ticket      Int
+  price       Float
+  category    String[]
+  createdBy   String
+  startDate   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  otpSecret  String? @db.VarChar(40) @map("otp_secret")
+  otpEnabled Int     @default(0)  
+}
+
+model A2FBackupCodes {
+  id                  String   @id @default(uuid())
+  userId              String   @unique @map("user_id")
+  codes               String[] @map("codes_hash")
+  nbCodeUsed          Int      @map("nb_code_used")
+  nbConsecutiveTests  Int      @map("nb_consecutive_tests")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+}

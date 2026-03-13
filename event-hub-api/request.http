@@ -1,0 +1,65 @@
+### register a new user
+POST http://localhost:8100/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "newpassword123"
+}
+
+### login
+# @name login
+POST http://localhost:8100/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Create a new event (PROTECTED)
+POST http://localhost:8100/api/events
+Content-Type: application/json
+
+
+{
+  "title": "Soirée Jazz Live",
+  "description": "Concert live + restauration sur place.",
+  "postalcode": "75011",
+  "address": "5 Rue du Faubourg Saint-Denis, Paris",
+  "capacity": 120,
+  "ticket": 100,
+  "price": 22.5,
+  "category": ["musique", "festival"],
+  "createdBy": "asso_music",
+  "startDate": "2026-04-15T19:30:00.000Z"
+}
+
+### Update an event (PROTECTED)
+PUT http://localhost:8100/api/events/evt-003
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.data.token}}
+
+{
+  "title": "Soirée Jazz et Blues Live",
+  "description": "Concert live avec restauration sur place.",
+  "postalcode": "75011",
+  "address": "5 Rue du Faubourg Saint-Denis, Paris",
+  "capacity": 150,
+  "ticket": 120,
+  "price": 25.0,
+  "category": ["musique", "festival", "blues"],
+  "createdBy": "asso_music",
+  "startDate": "2026-02-15T20:00:00.000Z"
+}
+
+### Delete an event (PROTECTED)
+DELETE http://localhost:8100/api/events/evt-005
+Authorization: Bearer {{login.response.body.$.data.token}}
+
+### A2F - Get QRCode 
+GET http://localhost:8100/api/a2f/qrcode
+Authorization: Bearer {{login.response.body.$.data.token}}
+
+### get all events
+GET http://localhost:8100/api/events
