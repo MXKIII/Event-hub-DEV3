@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import type { IUserRepository } from "../../domain/interfaces/userRepositoryInterface.js";
+import type { IUserRepository } from "../../../domain/interfaces/userRepositoryInterface.js";
 
 export class LoginUseCase {
   constructor(private readonly userRepository: IUserRepository) {}

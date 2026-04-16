@@ -2,10 +2,15 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ProfilePage } from '../components/ProfilePage';
 import { AuthProvider } from '../hooks/useAuth';
 import { RegisterData } from '../models/register.model';
+import { MemoryRouter } from 'react-router-dom';
 
 const renderWithAuth = (isAuthenticated: boolean = false, userData?: RegisterData) => {
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
-    return <AuthProvider>{children}</AuthProvider>;
+    return (
+      <MemoryRouter>
+        <AuthProvider>{children}</AuthProvider>
+      </MemoryRouter>
+    );
   };
 
   const result = render(<ProfilePage />, { wrapper: Wrapper });

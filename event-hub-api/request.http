@@ -1,5 +1,5 @@
 ### register a new user
-POST http://localhost:8100/api/auth/register
+POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ### login
 # @name login
-POST http://localhost:8100/api/auth/login
+POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Create a new event (PROTECTED)
-POST http://localhost:8100/api/events
+POST http://localhost:5000/api/events
 Content-Type: application/json
 
 
@@ -36,7 +36,7 @@ Content-Type: application/json
 }
 
 ### Update an event (PROTECTED)
-PUT http://localhost:8100/api/events/evt-003
+PUT http://localhost:5000/api/events/evt-003
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.data.token}}
 
@@ -54,12 +54,12 @@ Authorization: Bearer {{login.response.body.$.data.token}}
 }
 
 ### Delete an event (PROTECTED)
-DELETE http://localhost:8100/api/events/evt-005
+DELETE http://localhost:5000/api/events/evt-005
 Authorization: Bearer {{login.response.body.$.data.token}}
 
 ### A2F - Get QRCode 
-GET http://localhost:8100/api/a2f/qrcode
+GET http://localhost:5000/api/a2f/qrcode
 Authorization: Bearer {{login.response.body.$.data.token}}
 
 ### get all events
-GET http://localhost:8100/api/events
+GET http://localhost:5000/api/events

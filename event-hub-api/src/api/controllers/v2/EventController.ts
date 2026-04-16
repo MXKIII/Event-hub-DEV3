@@ -24,8 +24,8 @@ export class EventController {
 
     async getAll(req: Request, res: Response, next: NextFunction){
         try {
-            const page = Math.max(1, parseInt(req.query.page as string) || 1);
-            const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 10));
+            const page = Math.max(1, parseInt((req.query['page'] ?? '') as string) || 1);
+            const limit = Math.min(100, Math.max(1, parseInt((req.query['limit'] ?? '') as string) || 10));
 
             const result = await this.getAllEventsUseCase.execute(page, limit);
 
@@ -45,7 +45,7 @@ export class EventController {
 
     async getById(req: Request, res: Response, next: NextFunction){
         try {
-            const id = req.params.id;
+            const id = req.params['id'] as string;
             const event = await this.getEventByIdUseCase.execute(id); 
             if (!event) {
                 return res.jsonError("Événement introuvable", 404);
@@ -59,7 +59,7 @@ export class EventController {
 
     async update(req: Request, res: Response, next: NextFunction){
         try {
-            const id = req.params.id;
+            const id = req.params['id'] as string;
             const content = req.body;
             const updatedEvent = await this.updateEventUseCase.execute(id, content);
             if (!updatedEvent) {
@@ -74,7 +74,7 @@ export class EventController {
 
     async delete(req: Request, res: Response, next: NextFunction){
         try {
-            const id = req.params.id;
+            const id = req.params['id'] as string;
             const existingEvent = await this.getEventByIdUseCase.execute(id);
             if (!existingEvent) {
                 return res.jsonError("Événement introuvable", 404);
@@ -87,4 +87,13 @@ export class EventController {
         }
     }
 
+    async getSomeParam(req: Request, res: Response, next: NextFunction){
+        try {
+            const someParam = (req.query.someParam as string) ?? '';
+            return res.jsonSuccess({ message: "Paramètre récupéré avec succès", someParam });
+        }
+        catch (error) {
+           return next(error);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import type { IUserRepository } from "../../domain/interfaces/userRepositoryInterface.js";
+import type { IUserRepository } from "../../../domain/interfaces/userRepositoryInterface.js";
 
 export class RegisterUseCase {
   constructor(private readonly userRepository: IUserRepository) {}

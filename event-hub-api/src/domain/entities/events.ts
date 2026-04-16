@@ -115,4 +115,10 @@ export class Event {
       throw new Error("Le prix doit être supérieur ou égal à zéro.");
     }
   }
+
+  static reconstitute(props: EventProps): Event {
+    const event = Object.create(Event.prototype) as Event;
+    event["props"] = props;
+    return event;
+  }
 }

@@ -7,7 +7,7 @@ import { Category } from "../../domain/category/value-object/category.js";
 
 export class EventRepositoryDatabase implements EventRepositoryInterface {
   private toDomain(row: PrismaEvent): Event {
-    return new Event({
+    return Event.reconstitute({
       id: row.id,
       title: row.title,
       description: row.description,

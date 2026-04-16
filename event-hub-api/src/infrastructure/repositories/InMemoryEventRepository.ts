@@ -38,6 +38,14 @@ export class InMemoryEventRepository implements EventRepositoryInterface {
   }
 
   async findByCategoryId(categoryId: string): Promise<Event[]> {
-    return this.events.filter((e) => e.getProps().category.includes(categoryId));
+    return this.events.filter((e) => e.getProps().category.some(c => c.getName() === categoryId));
+  }
+
+  async findPaginated(page: number, limit: number): Promise<{ events: Event[]; total: number }> {
+    const start = (page - 1) * limit;
+    return {
+      events: this.events.slice(start, start + limit),
+      total: this.events.length,
+    };
   }
 }

@@ -1,0 +1,93 @@
+services:
+  # ---------- FRONTEND ----------
+  frontend:
+    build: ./eventhub_frontend
+    container_name: frontend
+    expose:
+      - "80"
+    networks:
+      - app-network
+
+  # ---------- BACKEND ----------
+  backend:
+    build: ./event-hub-api
+    container_name: backend
+    env_file:
+      - ./event-hub-api/.env
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - app-network
+
+  # ---------- MIGRATIONS PRISMA ----------
+  migrate:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./event-hub-api:/app
+    env_file:
+      - ./event-hub-api/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm install && npx prisma migrate deploy"
+    networks:
+      - app-network
+
+  # ---------- BASE DE DONNEES ----------
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: unless-stopped
+    env_file:
+      - ./event-hub-api/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d eventhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+    ports:
+      - "5433:5432"
+
+  # ---------- MONGO ----------
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  # ---------- REVERSE PROXY ----------
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+  mongo_data:
+
+networks:
+  app-network:
+    driver: bridge

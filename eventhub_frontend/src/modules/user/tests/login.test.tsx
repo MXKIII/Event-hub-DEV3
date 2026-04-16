@@ -1,13 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LoginForm } from '../components/LoginForm';
 import { AuthProvider } from '../hooks/useAuth';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('Login Component', () => {
   const setup = () => {
     render(
-      <AuthProvider>
-        <LoginForm />
-      </AuthProvider>
+      <MemoryRouter>
+        <AuthProvider>
+          <LoginForm />
+        </AuthProvider>
+      </MemoryRouter>
     );
   };
 

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.ts",
     "swagger:gen": "tsx docs/generate-swagger.ts",
-    "start": "npm run swagger:gen && nodemon --exec tsx src/api/server.ts",
+    "build": "tsc",
+    "start": "node dist/api/server.js",
     "seed": "tsx src/prisma/seed.ts"
   },
   "keywords": [],
@@ -48,6 +49,8 @@
     "prisma": "^7.2.0",
     "swagger-autogen": "^2.23.7",
     "ts-jest": "^29.4.6",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/qrcode": "^1.5.5"
   }
 }
