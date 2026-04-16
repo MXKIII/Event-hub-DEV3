@@ -31,8 +31,8 @@ COPY package*.json ./
 RUN npm install --only=production
 
 # 8. Copier le client Prisma genere depuis le stage builder
-COPY --from=builder /app/node_modules/prisma /app/node_modules/prisma
-COPY --from=builder /app/node_modules/.bin/prisma /app/node_modules/.bin/prisma
+COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma /app/node_modules/@prisma
 
 # 9. Copier le code compile et le schema
 COPY --from=builder /app/dist ./dist

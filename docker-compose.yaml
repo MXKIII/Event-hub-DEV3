@@ -21,9 +21,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
       - app-network
-    command: sh -c "node_modules/.bin/prisma migrate deploy && node dist/api/server.js"
 
   # ---------- MIGRATIONS PRISMA ----------
   migrate:
