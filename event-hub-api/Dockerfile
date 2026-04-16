@@ -37,6 +37,7 @@ COPY --from=builder /app/node_modules/@prisma /app/node_modules/@prisma
 # 9. Copier le code compile et le schema
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 COPY --from=builder /app/docs ./docs
 
 # 10. Exposer le port
