@@ -33,7 +33,7 @@ jobs:
             cd /home/${{ secrets.VPS_USER }}
 
             if [ ! -d "event-hub" ]; then
-              git clone https://github.com/${{ secrets.GITHUB_REPO }}.git event-hub
+              git clone https://github.com/${{ secrets.REPO_NAME }}.git event-hub
             fi
 
             cd event-hub
