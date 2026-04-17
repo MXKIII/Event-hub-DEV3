@@ -14,6 +14,7 @@ export interface EventProps {
   startDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  status?: "active" | "cancelled";
 }
 
 export class Event {
@@ -35,6 +36,7 @@ export class Event {
       startDate: props.startDate,
       createdAt: props.createdAt || new Date(),
       updatedAt: props.updatedAt || new Date(),
+      status: props.status ?? "active",
     };
   }
 
@@ -53,6 +55,7 @@ export class Event {
       startDate: this.props.startDate,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
+      status: this.props.status ?? "active",
     };
   }
 
@@ -120,5 +123,18 @@ export class Event {
     const event = Object.create(Event.prototype) as Event;
     event["props"] = props;
     return event;
+  }
+
+  cancel(organizerId: string): void {
+    if (this.props.createdBy !== organizerId) {
+      throw new Error("Seul l'organisateur de l'événement peut annuler cet événement.");
+    }
+    if (this.props.status === "cancelled") {
+      throw new Error("L'événement est déjà annulé.");
+    }
+    if (this.props.startDate < new Date()) {
+      throw new Error("Impossible d'annuler un événement passé.");
+    }
+    this.props.status = "cancelled";
   }
 }
