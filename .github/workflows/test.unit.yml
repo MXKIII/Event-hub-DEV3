@@ -1,0 +1,42 @@
+name: Unit Tests
+
+on:
+  workflow_call:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: |
+            event-hub-api/package-lock.json
+            eventhub_frontend/package-lock.json
+
+      # --- Backend ---
+      - name: Install backend dependencies
+        working-directory: ./event-hub-api
+        run: npm ci
+
+      - name: Run backend unit tests
+        working-directory: ./event-hub-api
+        run: npm test
+
+      # --- Frontend ---
+      - name: Install frontend dependencies
+        working-directory: ./eventhub_frontend
+        run: npm ci
+
+      - name: Run frontend unit tests
+        working-directory: ./eventhub_frontend
+        run: npm test
