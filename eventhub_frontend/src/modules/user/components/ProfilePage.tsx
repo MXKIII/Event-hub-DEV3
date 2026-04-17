@@ -5,6 +5,15 @@ import { useProfile } from '../hooks/profile.hook';
 export const ProfilePage: React.FC = () => {
   const hook = useProfile();
 
+  if (!hook.currentUser) {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2>Profile</h2>
+        <p>Please login to view your profile</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div style={{ padding: 20 }}>

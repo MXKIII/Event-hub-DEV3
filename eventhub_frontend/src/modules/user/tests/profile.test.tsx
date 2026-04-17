@@ -38,5 +38,27 @@ describe('Profile Component', () => {
     renderWithAuth();
     expect(screen.queryByRole('button', { name: /logout/i })).not.toBeInTheDocument();
   });
+
+  it('should display profile section', () => {
+    renderWithAuth();
+    expect(screen.getByText('Profile')).toBeInTheDocument();
+  });
+
+  it('should display profile heading when not authenticated', () => {
+    renderWithAuth();
+    expect(screen.getByRole('heading', { name: /Profile/i })).toBeInTheDocument();
+  });
+
+  it('should display empty fields when not authenticated', () => {
+    renderWithAuth();
+    expect(screen.queryByText('ID:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Email:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Username:')).not.toBeInTheDocument();
+  });
+
+  it('should not display logout button when unauthenticated', () => {
+    renderWithAuth();
+    expect(screen.queryByRole('button', { name: /Se déconnecter/i })).not.toBeInTheDocument();
+  });
 });
 

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LoginForm } from '../components/LoginForm';
 import { AuthProvider } from '../hooks/useAuth';
 import { MemoryRouter } from 'react-router-dom';
@@ -16,18 +16,15 @@ describe('Login Component', () => {
 
   it('should display input fields for login', () => {
     setup();
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Password');
-    expect(emailInput).toBeInTheDocument();
-    expect(passwordInput).toBeInTheDocument();
+    expect(screen.getByLabelText('Email')).toBeInTheDocument();
+    expect(screen.getByLabelText('Password')).toBeInTheDocument();
   });
 
   it('should have a button to submit login', () => {
     setup();
-    const submitButton = screen.getByRole('button', { name: /Login/i });
-    expect(submitButton).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Login/i })).toBeInTheDocument();
   });
-  
+
   it('should allow user to type in email and password', () => {
     setup();
     const emailInput = screen.getByLabelText('Email') as HTMLInputElement;
@@ -42,24 +39,23 @@ describe('Login Component', () => {
 
   it('should require email and password fields to be filled', () => {
     setup();
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Password');
-    expect(emailInput).toBeRequired();
-    expect(passwordInput).toBeRequired();
+    expect(screen.getByLabelText('Email')).toBeRequired();
+    expect(screen.getByLabelText('Password')).toBeRequired();
   });
 
-  it('should submit the form when the login button is clicked', () => {
+  it('should submit the form when the login button is clicked', async () => {
+    (global.fetch as jest.Mock).mockRejectedValueOnce(
+      new Error('Email ou mot de passe invalide.')
+    );
+
     setup();
-    const emailInput = screen.getByLabelText('Email') as HTMLInputElement;
-    const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
-    const submitButton = screen.getByRole('button', { name: /Login/i });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'Password@123' } });
+    fireEvent.click(screen.getByRole('button', { name: /Login/i }));
 
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'Password@123' } });
-    fireEvent.click(submitButton);
-
-    // Vérifier qu'un message d'erreur apparaît (utilisateur non enregistré)
-    expect(screen.getByText(/Email ou mot de passe invalide/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Email ou mot de passe invalide/i)).toBeInTheDocument();
+    });
   });
 
   it('should check that the password exists', () => {
