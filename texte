@@ -1,0 +1,10 @@
+kubectl apply -f 00-namespace.yaml
+kubectl apply -f 01-secrets.yaml
+kubectl apply -f 02-postgres.yaml
+kubectl apply -f 03-mongo.yaml
+kubectl apply -f 04-migrate-job.yaml
+kubectl apply -f 05-backend.yaml
+kubectl apply -f 06-frontend.yaml
+kubectl apply -f 07-nginx.yaml
+
+minikube service nginx-service -n eventhub

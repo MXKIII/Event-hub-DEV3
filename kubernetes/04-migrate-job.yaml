@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-migrate
+  namespace: eventhub
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox
+          command: ['sh', '-c', 'until nc -z postgres-service 5432; do echo "waiting for postgres..."; sleep 2; done']
+      containers:
+        - name: migrate
+          image: mkxime/eventhub-backend:latest
+          command: ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node dist/prisma/seed.js"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secrets
+                  key: DATABASE_URL
+  backoffLimit: 3
